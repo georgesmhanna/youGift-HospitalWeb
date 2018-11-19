@@ -19,6 +19,7 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { SampleModule } from 'app/main/sample/sample.module';
 import {LoginModule} from './main/login/login.module';
 import {ForgotPasswordModule} from './main/forgot-password/forgot-password.module';
+import {DonorsModule} from './main/donors/donors.module';
 
 
 const appRoutes: Routes = [
@@ -33,6 +34,10 @@ const appRoutes: Routes = [
     {
         path      : 'forgot-password',
         redirectTo: 'forgot-password'
+    },
+    {
+        path        : 'donors',
+        redirectTo: 'donors'
     },
 
 ];
@@ -67,7 +72,8 @@ const appRoutes: Routes = [
         LayoutModule,
         SampleModule,
         LoginModule,
-        ForgotPasswordModule
+        ForgotPasswordModule,
+        DonorsModule
     ],
     bootstrap   : [
         AppComponent

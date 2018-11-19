@@ -1,0 +1,116 @@
+<mat-table #table [dataSource]="dataSource"
+           [@animateStagger]="{value:'50'}">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="checkbox">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let donor">
+            <mat-checkbox [(ngModel)]="checkboxes[donor.id]" (ngModelChange)="onSelectedChange(donor.id)"
+                          (click)="$event.stopPropagation()">
+            </mat-checkbox>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Avatar Column -->
+    <ng-container matColumnDef="avatar">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let donor">
+            <img class="avatar" *ngIf="donor.avatar" [alt]="donor.name"
+                 [src]="donor.avatar"/>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+        <mat-cell *matCellDef="let donor">
+            <p class="text-truncate font-weight-600">{{donor.firstName}} {{donor.middleName}} {{donor.lastName}}</p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-sm>Email</mat-header-cell>
+        <mat-cell *matCellDef="let donor" fxHide fxShow.gt-sm>
+            <p class="email text-truncate">
+                {{donor.email}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Phone Column -->
+    <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-md>Phone</mat-header-cell>
+        <mat-cell *matCellDef="let donor" fxHide fxShow.gt-md>
+            <p class="phone text-truncate">
+                {{donor.mobileNumber}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Job Title Column -->
+    <ng-container matColumnDef="dateOfBirth">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-lg>Date Of Birth</mat-header-cell>
+        <mat-cell *matCellDef="let donor" fxHide fxShow.gt-lg>
+            <p class="job-title text-truncate">
+                {{donor.dateOfBirth | date:'mediumDate'}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Job Title Column -->
+    <ng-container matColumnDef="bloodType">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-lg>Blood Type</mat-header-cell>
+        <mat-cell *matCellDef="let donor" fxHide fxShow.gt-lg>
+            <p class="job-title text-truncate">
+                {{donor.bloodType}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Company Column -->
+    <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-lg>Status</mat-header-cell>
+        <mat-cell *matCellDef="let donor" fxHide fxShow.gt-lg>
+            <p class="company text-truncate">
+                {{donor.status? 'Active' : 'Inactive'}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Buttons Column -->
+    <ng-container matColumnDef="buttons">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let donor">
+            <div fxFlex="row" fxLayoutAlign="end center">
+                <!--<button mat-icon-button (click)="$event.stopPropagation();toggleStar(donor.id)" aria-label="Toggle star">-->
+                    <!--<mat-icon class="amber-fg" *ngIf="user.starred.includes(donor.id)">star</mat-icon>-->
+                    <!--<mat-icon class="secondary-text" *ngIf="!user.starred.includes(donor.id)">star_outline</mat-icon>-->
+                <!--</button>-->
+
+                <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                        (click)="$event.stopPropagation();">
+                    <mat-icon class="secondary-text">more_vert</mat-icon>
+                </button>
+
+                <mat-menu #moreMenu="matMenu">
+                    <button mat-menu-item aria-label="remove" (click)="deleteDonor(donor)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Remove</span>
+                    </button>
+                </mat-menu>
+            </div>
+
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let donor; columns: displayedColumns;"
+             class="donor"
+             (click)="editDonor(donor)"
+             [ngClass]="{'mat-accent-50-bg':checkboxes[donor.id]}"
+             matRipple
+             [@animate]="{value:'*',params:{y:'100%'}}">
+    </mat-row>
+</mat-table>
+
+
