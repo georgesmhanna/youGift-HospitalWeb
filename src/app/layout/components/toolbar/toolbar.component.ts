@@ -47,6 +47,7 @@ export class ToolbarComponent implements OnInit, OnDestroy
     {
           this.auth.getUser().subscribe(user =>{
             this.user = user;
+              console.log('user is ', user);
         });
         // Set the defaults
         this.userStatusOptions = [

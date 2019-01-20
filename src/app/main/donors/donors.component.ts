@@ -1,30 +1,32 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
+import {MatDialog} from '@angular/material';
+import {Observable, Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged, takeUntil} from 'rxjs/operators';
 
-import { fuseAnimations } from '@fuse/animations';
-import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
+import {fuseAnimations} from '@fuse/animations';
+import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
 
-import { DonorsService } from 'app/main/donors/donors.service';
-import { DonorsDonorFormDialogComponent } from 'app/main/donors/donor-form/donor-form.component';
+import {DonorsService} from 'app/main/donors/donors.service';
+import {DonorsDonorFormDialogComponent} from 'app/main/donors/donor-form/donor-form.component';
+import {AuthenticationService} from '../../../@fuse/services/authentication.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
-    selector     : 'donors',
-    templateUrl  : './donors.component.html',
-    styleUrls    : ['./donors.component.scss'],
+    selector: 'donors',
+    templateUrl: './donors.component.html',
+    styleUrls: ['./donors.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+    animations: fuseAnimations
 })
-export class DonorsComponent implements OnInit, OnDestroy
-{
+export class DonorsComponent implements OnInit, OnDestroy {
     dialogRef: any;
     hasSelectedDonors: boolean;
     searchInput: FormControl;
 
     // Private
     private _unsubscribeAll: Subject<any>;
+    private currentHospitalId: string;
 
     /**
      * Constructor
@@ -36,9 +38,10 @@ export class DonorsComponent implements OnInit, OnDestroy
     constructor(
         private _donorsService: DonorsService,
         private _fuseSidebarService: FuseSidebarService,
-        private _matDialog: MatDialog
-    )
-    {
+        private _matDialog: MatDialog,
+        private auth: AuthenticationService,
+        private spinner: NgxSpinnerService
+    ) {
         // Set the defaults
         this.searchInput = new FormControl('');
 
@@ -53,8 +56,7 @@ export class DonorsComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         this._donorsService.onSelectedDonorsChanged
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(selectedDonors => {
@@ -75,8 +77,7 @@ export class DonorsComponent implements OnInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -89,23 +90,37 @@ export class DonorsComponent implements OnInit, OnDestroy
     /**
      * New donor
      */
-    newDonor(): void
-    {
+    newDonor(): void {
+
+        this.auth.getUser().subscribe(user => {
+            this.currentHospitalId = user.hospital ? user.hospital.id : '';
+        });
         this.dialogRef = this._matDialog.open(DonorsDonorFormDialogComponent, {
             panelClass: 'donor-form-dialog',
-            data      : {
-                action: 'new'
+            data: {
+                action: 'new',
+                bloodTypes: this._donorsService.getBloodTypes(),
+                currentHospitalId: this.currentHospitalId
             }
         });
 
         this.dialogRef.afterClosed()
             .subscribe((response: FormGroup) => {
-                if ( !response )
-                {
+                if (!response) {
                     return;
                 }
 
-                this._donorsService.updateDonor(response.getRawValue());
+
+                const newDonor = response.getRawValue();
+                delete newDonor.avatar;
+                newDonor.hospitals = [];
+                newDonor.hospitals.push(this.currentHospitalId);
+                console.log('new : ', newDonor);
+                this.spinner.show();
+                this._donorsService.createDonor(newDonor).then(() => {
+                    this.spinner.hide();
+                });
+
             });
     }
 
@@ -114,8 +129,7 @@ export class DonorsComponent implements OnInit, OnDestroy
      *
      * @param name
      */
-    toggleSidebar(name): void
-    {
+    toggleSidebar(name): void {
         this._fuseSidebarService.getSidebar(name).toggleOpen();
     }
 }

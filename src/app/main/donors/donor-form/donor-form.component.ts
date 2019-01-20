@@ -1,6 +1,7 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import {emailValidator, matchingPasswords} from '../../../utils/app.validator';
 
 import { Donor } from 'app/main/donors/donor.model';
 
@@ -17,6 +18,9 @@ export class DonorsDonorFormDialogComponent
     donor: Donor;
     donorForm: FormGroup;
     dialogTitle: string;
+    hospitals: any[];
+    bloodTypes: any[];
+    currentHospitalId: any;
 
     /**
      * Constructor
@@ -33,11 +37,17 @@ export class DonorsDonorFormDialogComponent
     {
         // Set the defaults
         this.action = _data.action;
+        this.hospitals = _data.hospitals;
+        this.bloodTypes = _data.bloodTypes;
+        this.currentHospitalId = _data.currentHospitalId;
 
+        console.log('georges bloodtypes are: ', this.bloodTypes);
         if ( this.action === 'edit' )
         {
             this.dialogTitle = 'Edit Donor';
             this.donor = _data.donor;
+
+            console.log('georges donor is', this.donor);
         }
         else
         {
@@ -45,7 +55,7 @@ export class DonorsDonorFormDialogComponent
             this.donor = new Donor({});
         }
 
-        this.donorForm = this.createDonorForm();
+        this.donorForm = this.createDonorForm(this.action);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -57,22 +67,25 @@ export class DonorsDonorFormDialogComponent
      *
      * @returns {FormGroup}
      */
-    createDonorForm(): FormGroup
+    createDonorForm(action): FormGroup
     {
         return this._formBuilder.group({
-            // id      : [this.donor.id],
-            firstName    : [this.donor.firstName],
-            lastName: [this.donor.lastName],
+            id: [this.donor.id],
+            firstName: [this.donor.firstName, [Validators.required]],
+            lastName: [this.donor.lastName, [Validators.required]],
             avatar  : [this.donor.avatar],
             status : [this.donor.status],
             isDead: [this.donor.isDead],
             isOrganDonor: [this.donor.isOrganDonor],
-            middleName: [this.donor.middleName],
-            bloodType: [this.donor.bloodType],
-            email   : [this.donor.email],
-            mobileNumber   : [this.donor.mobileNumber],
-            address : [this.donor.address],
-            dateOfBirth: [this.donor.dateOfBirth]
-        });
+            middleName: [this.donor.middleName, [Validators.required]],
+            bloodType: [this.donor.bloodType, [Validators.required]],
+            email: [this.donor.email, [Validators.required, Validators.email]],
+            mobileNumber: [this.donor.mobileNumber, [Validators.required]],
+            address: [this.donor.address, [Validators.required]],
+            dateOfBirth: [this.donor.dateOfBirth, [Validators.required]],
+            password: [this.donor.password, action !== 'edit' ? [Validators.required, Validators.minLength(8)] : []],
+            'confirmPassword': ['', action !== 'edit' ? Validators.required : []]
+            // });
+        }, {validator: action !== 'edit' ? matchingPasswords('password', 'confirmPassword') : null});
     }
 }

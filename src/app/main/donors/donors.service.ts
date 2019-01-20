@@ -12,12 +12,15 @@ import {environment} from '../../../environments/environment';
 export class DonorsService implements Resolve<any>
 {
     onDonorsChanged: BehaviorSubject<any>;
+    onHospitalsChanged: BehaviorSubject<any>;
     onSelectedDonorsChanged: BehaviorSubject<any>;
     onUserDataChanged: BehaviorSubject<any>;
     onSearchTextChanged: Subject<any>;
     onFilterChanged: Subject<any>;
 
     donors: Donor[];
+    hospitals: any[];
+    bloodTypes: any[] = ['O+', 'O-', 'AB+', 'AB-', 'A+', 'A-', 'B+', 'B-'];
     user: any;
     selectedDonors: string[] = [];
 
@@ -35,6 +38,7 @@ export class DonorsService implements Resolve<any>
     {
         // Set the defaults
         this.onDonorsChanged = new BehaviorSubject([]);
+        this.onHospitalsChanged = new BehaviorSubject([]);
         this.onSelectedDonorsChanged = new BehaviorSubject([]);
         this.onUserDataChanged = new BehaviorSubject([]);
         this.onSearchTextChanged = new Subject();
@@ -58,7 +62,8 @@ export class DonorsService implements Resolve<any>
 
             Promise.all([
                 this.getDonors(),
-                this.getUserData()
+                this.getUserData(),
+                this.getHospitals()
             ]).then(
                 ([files]) => {
 
@@ -92,7 +97,7 @@ export class DonorsService implements Resolve<any>
                     .subscribe((response: any) => {
 
                         this.donors = response;
-console.log(`donors: `, this.donors)
+                        console.log(`donors: `, this.donors);
                         if ( this.filterBy === 'starred' )
                         {
                             this.donors = this.donors.filter(_donor => {
@@ -123,6 +128,21 @@ console.log(`donors: `, this.donors)
         );
     }
 
+    getHospitals(): Promise<any> {
+        return new Promise((resolve, reject) => {
+                this._httpClient.get(environment.apiUrl + '/hospital')
+                    .subscribe((response: any) => {
+
+                        this.hospitals = response;
+                        console.log(`hospitals: `, this.hospitals);
+
+                        this.onHospitalsChanged.next(this.hospitals);
+                        resolve(this.hospitals);
+                    }, reject);
+            }
+        );
+    }
+
     /**
      * Get user data
      *
@@ -131,7 +151,7 @@ console.log(`donors: `, this.donors)
     getUserData(): Promise<any>
     {
         return new Promise((resolve, reject) => {
-                this._httpClient.get(environment.apiUrl + '/donor/5b4fb335b8b960393c982d4e')
+            this._httpClient.get(environment.apiUrl + '/donor/5be9df3fcba4d8451849a443')
                     .subscribe((response: any) => {
                         this.user = response;
                         this.onUserDataChanged.next(this.user);
@@ -220,7 +240,18 @@ console.log(`donors: `, this.donors)
     {
         return new Promise((resolve, reject) => {
 
-            this._httpClient.post(environment.apiUrl +  '/donor/' + donor.id, {...donor})
+            this._httpClient.put(environment.apiUrl + '/donor/' + donor.id, {...donor})
+                .subscribe(response => {
+                    this.getDonors();
+                    resolve(response);
+                });
+        });
+    }
+
+    createDonor(donor): Promise<any> {
+        return new Promise((resolve, reject) => {
+
+            this._httpClient.post(environment.apiUrl + '/donor', {...donor})
                 .subscribe(response => {
                     this.getDonors();
                     resolve(response);
@@ -262,11 +293,19 @@ console.log(`donors: `, this.donors)
      *
      * @param donor
      */
-    deleteDonor(donor): void
+    deleteDonor(donor): Promise<any>
     {
-        const donorIndex = this.donors.indexOf(donor);
-        this.donors.splice(donorIndex, 1);
-        this.onDonorsChanged.next(this.donors);
+        return new Promise((resolve, reject) => {
+
+            this._httpClient.delete(environment.apiUrl + '/donor/' + donor.id)
+                .subscribe(response => {
+                    this.getDonors();
+                    resolve(response);
+                });
+        });
+        // const donorIndex = this.donors.indexOf(donor);
+        // this.donors.splice(donorIndex, 1);
+        // this.onDonorsChanged.next(this.donors);
     }
 
     /**
@@ -284,6 +323,10 @@ console.log(`donors: `, this.donors)
         }
         this.onDonorsChanged.next(this.donors);
         this.deselectDonors();
+    }
+
+    getBloodTypes(): any[] {
+        return this.bloodTypes;
     }
 
 }

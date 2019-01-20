@@ -21,56 +21,100 @@
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
-                    <input name="name" formControlName="name" placeholder="Name" matInput required>
+                    <input name="firstName" formControlName="firstName" placeholder="First Name" matInput required>
                 </mat-form-field>
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
-                    <input name="lastName" formControlName="lastName" placeholder="Lastname" matInput>
+                    <input name="lastName" formControlName="lastName" placeholder="Last Name" matInput required>
                 </mat-form-field>
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
-                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">star</mat-icon>
-                    <input name="nickname" formControlName="nickname" matInput placeholder="Nickname">
+                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+                    <input name="middleName" formControlName="middleName" matInput placeholder="Middle Name" required>
                 </mat-form-field>
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">phone</mat-icon>
-                    <input formControlName="phone" matInput placeholder="Phone number">
+                    <input formControlName="mobileNumber" matInput placeholder="Phone number" required>
                 </mat-form-field>
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">email</mat-icon>
-                    <input name="email" formControlName="email" matInput type="email" placeholder="Email">
+                    <input name="email" [readonly]="action==='edit'" readonly formControlName="email" matInput
+                           type="email" placeholder="Email">
                 </mat-form-field>
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start" *ngIf="action!=='edit'">
+                <mat-form-field fxFlex>
+                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">lock</mat-icon>
+                    <input name="password" formControlName="password" matInput type="password" placeholder="Password">
+                    <mat-error *ngIf="donorForm.controls.password.hasError('minlength')">Password isn't long enough,
+                        minimum of 8 characters
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start" *ngIf="action!=='edit'">
+                <mat-form-field fxFlex>
+                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">lock</mat-icon>
+                    <input name="confirmPassword"
+                           formControlName="confirmPassword" matInput type="password" placeholder="Confirm Password">
+                    <mat-error *ngIf="donorForm.controls.confirmPassword.errors?.required">Confirm Password is
+                        required
+                    </mat-error>
+                    <mat-error *ngIf="donorForm.controls.confirmPassword.hasError('mismatchedPasswords')">Passwords do
+                        not match
+                    </mat-error>
+
+                </mat-form-field>
+            </div>
+
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+                <!--<mat-form-field fxFlex>-->
+                <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">thumbs_up_down</mat-icon>-->
+                <mat-slide-toggle formControlName="status">Status</mat-slide-toggle>
+                <!--</mat-form-field>-->
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+                <!--<mat-form-field fxFlex>-->
+                <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">thumbs_up_down</mat-icon>-->
+                <mat-slide-toggle formControlName="isDead">Dead</mat-slide-toggle>
+                <!--</mat-form-field>-->
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+                <!--<mat-form-field fxFlex>-->
+                <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">thumbs_up_down</mat-icon>-->
+                <mat-slide-toggle formControlName="isOrganDonor">Organ Donor</mat-slide-toggle>
+                <!--</mat-form-field>-->
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
-                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">domain</mat-icon>
-                    <input name="company" formControlName="company" matInput placeholder="Company">
-                </mat-form-field>
-            </div>
-
-            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field fxFlex>
-                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">work</mat-icon>
-                    <input name="jobTitle" formControlName="jobTitle" matInput placeholder="Job title">
+                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">healing</mat-icon>
+                    <mat-select placeholder="Blood Type" formControlName="bloodType">
+                        <mat-option *ngFor="let bloodType of bloodTypes" [value]="bloodType">{{bloodType}}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field class="mr-24" fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">cake</mat-icon>
-                    <input matInput [matDatepicker]="birthdayDatePicker" placeholder="Birthday">
+                    <input name="dateOfBirth" matInput [matDatepicker]="birthdayDatePicker" placeholder="Date of Birth"
+                           formControlName="dateOfBirth" required>
                     <mat-datepicker-toggle matSuffix [for]="birthdayDatePicker"></mat-datepicker-toggle>
                     <mat-datepicker #birthdayDatePicker></mat-datepicker>
                 </mat-form-field>
@@ -79,16 +123,16 @@
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
                     <mat-icon matPrefix class="mr-12 s-20 secondary-text">home</mat-icon>
-                    <input name="address" formControlName="address" matInput placeholder="Address">
+                    <input name="address" formControlName="address" matInput placeholder="Address" required>
                 </mat-form-field>
             </div>
 
-            <div fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">
-                <mat-form-field fxFlex>
-                    <textarea name="notes" formControlName="notes" placeholder="Notes" matInput type="text"
-                              max-rows="4"></textarea>
-                </mat-form-field>
-            </div>
+            <!--<div fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">-->
+            <!--<mat-form-field fxFlex>-->
+            <!--<textarea name="notes" formControlName="notes" placeholder="Notes" matInput type="text"-->
+            <!--max-rows="4"></textarea>-->
+            <!--</mat-form-field>-->
+            <!--</div>-->
 
         </form>
 
@@ -98,7 +142,7 @@
 
         <button *ngIf="action !=='edit'"
                 mat-raised-button
-                (click)="_matDialogRef.close(donorForm)"
+                (click)="matDialogRef.close(donorForm)"
                 class="save-button mat-accent"
                 [disabled]="donorForm.invalid"
                 aria-label="SAVE">
@@ -107,7 +151,7 @@
 
         <button *ngIf="action ==='edit'"
                 mat-raised-button
-                (click)="_matDialogRef.close(['save',donorForm])"
+                (click)="matDialogRef.close(['save',donorForm])"
                 class="save-button mat-accent"
                 [disabled]="donorForm.invalid"
                 aria-label="SAVE">
@@ -116,7 +160,7 @@
 
         <button *ngIf="action ==='edit'"
                 mat-icon-button
-                (click)="_matDialogRef.close(['delete',donorForm])"
+                (click)="matDialogRef.close(['delete',donorForm])"
                 aria-label="Delete"
                 matTooltip="Delete">
             <mat-icon>delete</mat-icon>

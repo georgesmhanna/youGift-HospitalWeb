@@ -26,7 +26,7 @@
 
     <div class="user mat-indigo-700-bg" fxLayout="column">
 
-        <div class="h3 username">{{(user$ | async)?.hospital}}</div>
+        <div class="h3 username">{{(user$ | async)?.hospital?.name}}</div>
         <div class="h5 email hint-text mt-8">{{(user$|async)?.email}}</div>
         <!--<div class="avatar-container" [ngClass]="fuseConfig.layout.navbar.background">-->
             <!--<img class="avatar" src="assets/images/avatars/Velazquez.jpg">-->

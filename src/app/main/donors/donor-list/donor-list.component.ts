@@ -31,9 +31,9 @@ export class DonorsDonorListComponent implements OnInit, OnDestroy
     checkboxes: {};
     dialogRef: any;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
-
     // Private
     private _unsubscribeAll: Subject<any>;
+    private hospitals: any;
 
     /**
      * Constructor
@@ -70,6 +70,14 @@ export class DonorsDonorListComponent implements OnInit, OnDestroy
                 donors.map(donor => {
                     this.checkboxes[donor.id] = false;
                 });
+            });
+
+        this._donorsService.onHospitalsChanged
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(hospitals => {
+                this.hospitals = hospitals;
+
+                this.checkboxes = {};
             });
 
         this._donorsService.onSelectedDonorsChanged
@@ -125,7 +133,9 @@ export class DonorsDonorListComponent implements OnInit, OnDestroy
             panelClass: 'donor-form-dialog',
             data      : {
                 donor: donor,
-                action : 'edit'
+                action: 'edit',
+                hospitals: this.hospitals,
+                bloodTypes: this._donorsService.getBloodTypes()
             }
         });
 
@@ -143,8 +153,10 @@ export class DonorsDonorListComponent implements OnInit, OnDestroy
                      * Save
                      */
                     case 'save':
-
-                        this._donorsService.updateDonor(formData.getRawValue());
+                        console.log('edit data is ', formData.getRawValue());
+                        let editData = formData.getRawValue();
+                        delete editData.avatar;
+                        this._donorsService.updateDonor(editData);
 
                         break;
                     /**

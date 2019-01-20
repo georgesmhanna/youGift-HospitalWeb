@@ -1,4 +1,5 @@
 import { FuseUtils } from '@fuse/utils';
+import {environment} from '../../../environments/environment';
 
 export class Donor
 {
@@ -17,6 +18,7 @@ export class Donor
     address: string;
     avatar: string;
     user: any;
+    password: any;
 
     /**
      * Constructor
@@ -26,18 +28,20 @@ export class Donor
     constructor(donor)
     {
         {
+            this.id = donor.id;
             this.firstName = donor.firstName || '';
             this.lastName = donor.lastName || '';
-            this.status = donor.status || true;
-            this.avatar = donor.avatar || 'assets/images/avatars/profile.jpg';
+            this.status = donor.status;
+            this.avatar = donor.avatar ? environment.apiUrl + donor.avatar.url : 'assets/images/avatars/profile.jpg';
             this.middleName = donor.middleName || '';
             this.bloodType = donor.bloodType || '';
-            this.isDead = donor.isDead || false;
-            this.isOrganDonor = donor.isOrganDonor || false;
-            this.email = donor.user.email || '';
+            this.isDead = donor.isDead;
+            this.isOrganDonor = donor.isOrganDonor;
+            this.email = donor.user ? donor.user.email : '';
             this.mobileNumber = donor.mobileNumber || '';
             this.address = donor.address || '';
             this.dateOfBirth = donor.dateOfBirth || '';
+            this.password = donor.user ? donor.user.password : '';
 
 
         }
