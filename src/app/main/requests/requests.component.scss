@@ -1,0 +1,17 @@
+#requests {
+
+    .content {
+        overflow: hidden;
+
+        .sidebar {
+
+            &:not(.locked-open) {
+                background: white;
+            }
+        }
+    }
+}
+
+.inactive {
+    -webkit-text-fill-color: red;
+}
