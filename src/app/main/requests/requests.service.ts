@@ -59,7 +59,7 @@ export class RequestsService implements Resolve<any> {
 
             Promise.all([
                 this.getRequests(),
-                this.getRequestData()
+                // this.getRequestData()
                 // this.getHospitals()
             ]).then(
                 ([files]) => {
@@ -142,17 +142,17 @@ export class RequestsService implements Resolve<any> {
      *
      * @returns {Promise<any>}
      */
-    getRequestData(): Promise<any> {
-        return new Promise((resolve, reject) => {
-                this._httpClient.get(environment.apiUrl + '/requests/5c3e5707b52f040bfa53c3c6')
-                    .subscribe((response: any) => {
-                        this.user = response;
-                        this.onRequestDataChanged.next(this.user);
-                        resolve(this.user);
-                    }, reject);
-            }
-        );
-    }
+    // getRequestData(): Promise<any> {
+    //     return new Promise((resolve, reject) => {
+    //             this._httpClient.get(environment.apiUrl + '/requests/5c3e5707b52f040bfa53c3c6')
+    //                 .subscribe((response: any) => {
+    //                     this.user = response;
+    //                     this.onRequestDataChanged.next(this.user);
+    //                     resolve(this.user);
+    //                 }, reject);
+    //         }
+    //     );
+    // }
 
     /**
      * Toggle selected requests by id
@@ -246,7 +246,7 @@ export class RequestsService implements Resolve<any> {
         });
     }
 
-    private sendNotification(request): any {
+    public sendNotification(request): any {
         return new Promise((resolve, reject) => {
             const oneSignalUrl = 'https://onesignal.com/api/v1/notifications';
 
@@ -293,7 +293,7 @@ export class RequestsService implements Resolve<any> {
         return new Promise((resolve, reject) => {
             this._httpClient.post(environment.apiUrl + '/requests/' + this.user.id, {...requestData})
                 .subscribe(response => {
-                    this.getRequestData();
+                    // this.getRequestData();
                     this.getRequests();
                     resolve(response);
                 });

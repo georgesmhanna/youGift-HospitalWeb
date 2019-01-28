@@ -69,7 +69,8 @@ export class RequestsRequestFormDialogComponent {
             quantity: [this.request.quantity, [Validators.required]],
             description: [this.request.description],
             bloodType: [this.request.bloodType, [Validators.required]],
-
+            patientName: [this.request.patientName, [Validators.required]],
+            patientContactNumber: [this.request.patientContactNumber, [Validators.required]],
         });
     }
 }

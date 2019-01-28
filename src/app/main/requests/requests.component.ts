@@ -26,6 +26,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
     // Private
     private _unsubscribeAll: Subject<any>;
     private currentHospitalId: string;
+    private userId: any;
 
     /**
      * Constructor
@@ -93,6 +94,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
 
         this.auth.getUser().subscribe(user => {
             this.currentHospitalId = user.hospital ? user.hospital.id : '';
+            this.userId = user._id;
         });
         this.dialogRef = this._matDialog.open(RequestsRequestFormDialogComponent, {
             panelClass: 'request-form-dialog',
@@ -111,10 +113,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
 
 
                 const newRequest = response.getRawValue();
-                delete newRequest.avatar;
-                newRequest.hospitals = [];
-                newRequest.hospitals.push(this.currentHospitalId);
-                console.log('new : ', newRequest);
+                newRequest.issuer = this.userId;
                 this._requestsService.createRequest(newRequest);
             });
     }

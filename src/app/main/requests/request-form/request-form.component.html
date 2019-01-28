@@ -33,6 +33,22 @@
 
             <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field fxFlex>
+                    <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>-->
+                    <input name="patientName" formControlName="patientName" placeholder="Patient Name" matInput
+                           required>
+                </mat-form-field>
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex>
+                    <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>-->
+                    <input name="patientContactNumber" formControlName="patientContactNumber"
+                           placeholder="Patient Contact Number" matInput required>
+                </mat-form-field>
+            </div>
+
+            <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex>
                     <!--<mat-icon matPrefix class="mr-12 s-20 secondary-text">phone</mat-icon>-->
                     <textarea formControlName="description" matInput placeholder="Description" required></textarea>
                 </mat-form-field>

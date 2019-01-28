@@ -25,7 +25,7 @@ export class RequestsRequestListComponent implements OnInit, OnDestroy {
     requests: any;
     user: any;
     dataSource: FilesDataSource | null;
-    displayedColumns = ['checkbox', 'date', 'type', 'bloodType', 'quantity', 'description', 'replies', 'status', 'buttons'];
+    displayedColumns = ['checkbox', 'date', 'type', 'bloodType', 'quantity', 'description', 'patientName', 'replies', 'status', 'buttons'];
     selectedRequests: any[];
     checkboxes: {};
     dialogRef: any;
@@ -204,6 +204,33 @@ export class RequestsRequestListComponent implements OnInit, OnDestroy {
         }
 
         this._requestsService.updateRequestData(this.user);
+    }
+
+    resendRequest(request): any {
+        this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to resend notification?';
+        this.confirmDialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this._requestsService.sendNotification(request);
+            }
+        });
+
+    }
+
+    deactivateRequest(request): any {
+        this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to drop this request?';
+        this.confirmDialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                request.status = false;
+                this._requestsService.updateRequest(request);
+            }
+        });
+
     }
 }
 

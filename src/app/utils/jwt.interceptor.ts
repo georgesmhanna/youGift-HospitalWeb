@@ -7,7 +7,7 @@ export class JwtInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // add authorization header with jwt token if available
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && currentUser.token) {
+        if (currentUser && currentUser.token && !request.url.includes('onesignal.com')) {  // added onesignal exclusion to not override the authorization header
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${currentUser.token}`

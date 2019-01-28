@@ -48,6 +48,15 @@
         </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="patientName">
+        <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-md>Patient Name</mat-header-cell>
+        <mat-cell *matCellDef="let request" fxHide fxShow.gt-md>
+            <p class="job-title text-truncate">
+                {{request.patientName}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="description">
         <mat-header-cell *matHeaderCellDef fxHide fxShow.gt-lg>Description</mat-header-cell>
         <mat-cell *matCellDef="let request" fxHide fxShow.gt-lg>
@@ -86,26 +95,25 @@
                 <!--<mat-icon class="secondary-text" *ngIf="!user.starred.includes(request.id)">star_outline</mat-icon>-->
                 <!--</button>-->
 
-                <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                <button mat-button [matMenuTriggerFor]="moreMenu" aria-label="More"
                         (click)="$event.stopPropagation();">
-                    <mat-icon class="secondary-text">more_vert</mat-icon>
+                    <span>More</span>
                 </button>
 
                 <mat-menu #moreMenu="matMenu">
                     <!--<button mat-menu-item aria-label="cancel" (click)="dropRequest(request)">-->
-                    <button mat-menu-item aria-label="cancel">
+                    <button mat-menu-item aria-label="cancel" (click)="deactivateRequest(request)">
                         <mat-icon>delete</mat-icon>
                         <span>Drop</span>
                     </button>
-                </mat-menu>
 
-                <mat-menu #moreMenu="matMenu">
-                    <!--<button mat-menu-item aria-label="resend" (click)="resendRequest(request)">-->
-                    <button mat-menu-item aria-label="resend">
+                    <button *ngIf="request.status" mat-menu-item aria-label="resend" (click)="resendRequest(request)">
                         <mat-icon>replay</mat-icon>
                         <span>Resend</span>
                     </button>
+
                 </mat-menu>
+
             </div>
 
         </mat-cell>

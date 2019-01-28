@@ -8,6 +8,8 @@ export class Request {
     bloodType: string;
     status: boolean;
     issuer: {};
+    patientName: string;
+    patientContactNumber: string;
 
     /**
      * Constructor
@@ -25,7 +27,8 @@ export class Request {
             this.status = request.status;
             this.issuer = request.issuer;
             this.description = request.description;
-
+            this.patientName = request.patientName;
+            this.patientContactNumber = request.patientContactNumber;
         }
     }
 }
